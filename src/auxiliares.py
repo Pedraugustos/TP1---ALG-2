@@ -15,6 +15,63 @@ class Coordenada:
         self.lat = lat
         self.long = long
 
+    def geaohash(self):
+        """
+        Transforma coordenadas (latitude, longitude) em um codigo Geohash.
+        """
+        
+        # verifica se a coordenada esta dentro do intervalo aceito
+        if not (LATMIN < self.lat < LATMAX):
+            raise ValueError(f"Latitude deve estar no intervalo ({LATMIN}, {LATMAX}).")
+        
+        if not (LONGMIN < self.long < LONGMAX):
+            raise ValueError(f"Longitude deve estar no intervalo ({LONGMIN}, {LONGMAX}).")
+        
+        lat = ESTADOINICIAL
+        
+        intervaloLat = [LATMIN, LATMAX]
+        intervaloLong = [LONGMIN, LONGMAX]
+        
+        codGeohash = ""
+        
+        for _ in range(0, NIVEIS):
+            binario = 0
+        
+            # calcula um caractere do geohash
+            for i in range(0, 5):
+                binario <<= 1
+                # 1: lattitude/longitude eh maior ou igual a media
+                # 0: caso contrario
+        
+                if lat: # verifiar latitude
+                    media = (intervaloLat[0] + intervaloLat[1]) / 2
+        
+                    if self.lat >= media:
+                        binario += 1
+                        intervaloLat[0] = media
+        
+                    else:
+                        intervaloLat[1] = media
+        
+                    lat = False
+        
+                else: # verifcar longitude
+                    media = (intervaloLong[0] + intervaloLong[1]) / 2
+        
+                    if self.long >= media:
+                        binario += 1 
+                        intervaloLong[0] = media
+        
+                    else:
+                        intervaloLong[1] = media
+                        
+                    lat = True
+                
+            # converte binario para a base 32
+            codGeohash += BASE32[binario]
+        
+        return codGeohash
+
 def coordenada_geohash(coordenada):
     """
     Transforma coordenadas (latitude, longitude) em um codigo Geohash.

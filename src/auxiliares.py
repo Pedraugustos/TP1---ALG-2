@@ -218,24 +218,3 @@ def geohash_coordenada(codGeohash):
     longitude = (intervaloLong[0] + intervaloLong[1]) / 2
 
     return Coordenada(latitude, longitude)
-
-def geohashes_vizinhos(coord):
-    dimLat, dimLong = dimensao_celula()
-
-    resultados = []
-    for dirY in (-1, 0, 1):       # direcao do deslocamento em latitude
-        for dirX in (-1, 0, 1):   # direcao do deslocamento em longitude
-            latViz = coord.lat + dirY * dimLat
-            longViz = coord.long + dirX * dimLong
-
-            # ignora vizinhos fora da regiao de interesse
-            if not (LATMIN < latViz < LATMAX):
-                continue
-            if not (LONGMIN < longViz < LONGMAX):
-                continue
-
-            resultados.append(coordenada_geohash(Coordenada(latViz, longViz)))
-
-    return resultados
-
-# print(geohash_coordenada(coordenada_geohash(Coordenada(-19.917452,-43.9192819))))

@@ -1,7 +1,7 @@
-class Noh:
+class _Noh:
     # construtor
     def __init__(self, rotulo = ""):
-        # rotulo: sequencia de caracteres que satisfaz aquele Noh
+        # rotulo: sequencia de caracteres que satisfaz aquele noh
         self.rotulo = rotulo
 
         # dicionario onde cada CHAVE eh o PRIMEIRO CARACTERE do rotulo do filho
@@ -16,7 +16,7 @@ class Noh:
 class TRIECompacta:
     def __init__(self):
         # raiz com rotulo vazio
-        self.raiz = Noh("")
+        self.raiz = _Noh("")
 
     def _coleta(self, noh, resultado):
         # entregadores que terminam nesse noh
@@ -37,7 +37,7 @@ class TRIECompacta:
             # nao existe filho comecando com esse caractere:
             # cria um noh novo com o restante da palavra como rotulo
             if primeiro not in noh.filhos:
-                novo = Noh(palavra[i:])
+                novo = _Noh(palavra[i:])
                 novo.valores.append(valor)
                 noh.filhos[primeiro] = novo
                 return
@@ -67,7 +67,7 @@ class TRIECompacta:
             sufixoFilho = rotulo[j:]
 
             # cria o noh intermediario com o prefixo comum
-            intermediario = Noh(prefixoComum)
+            intermediario = _Noh(prefixoComum)
 
             # filho antigo perde o prefixo comum
             filho.rotulo = sufixoFilho
@@ -86,7 +86,7 @@ class TRIECompacta:
                 # palavra continua:
                 # cria novo filho para o restante
                 resto = palavra[i + j:]
-                novo = Noh(resto)
+                novo = _Noh(resto)
                 novo.valores.append(valor)
                 intermediario.filhos[resto[0]] = novo
 

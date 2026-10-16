@@ -82,7 +82,7 @@ def niveis_para_raio(raioMestros):
 
     ultimoNivel = 1
 
-    for niveis in range(1, 9):
+    for niveis in range(1, NIVEIS + 1):
         totalBits = niveis * 5
         bitsLong = (totalBits + 1) // 2
         bitsLat = totalBits // 2
@@ -104,6 +104,68 @@ def niveis_para_raio(raioMestros):
             break
 
     return ultimoNivel
+
+def dimensao_celula(niveis):
+    """
+    Retorna o tamanho da celula (em graus) para o nivel informado
+    """
+    totalBits = niveis * 5
+    bitsLong = (totalBits + 1) // 2
+    bitsLat  = totalBits // 2
+
+    dimLat  = (LATMAX - LATMIN) / (2 ** bitsLat)
+    dimLong = (LONGMAX - LONGMIN) / (2 ** bitsLong)
+
+    return dimLat, dimLong
+
+def geohashes_vizinhos(coord, niveis):
+    """
+    Retorna os 9 geohashes (centro + 8 vizinhos) no nivel informado
+    """
+    dimLat, dimLong = dimensao_celula(niveis)
+
+    resultados = []
+    for dirY in (-1, 0, 1):
+        for dirX in (-1, 0, 1):
+            latViz  = coord.lat  + dirY * dimLat
+            longViz = coord.long + dirX * dimLong
+
+            if not (LATMIN < latViz < LATMAX):
+                continue
+            if not (LONGMIN < longViz < LONGMAX):
+                continue
+
+            gh = coordenada_geohash(Coordenada(latViz, longViz))[:niveis]
+            resultados.append(gh)
+
+    return resultados
+
+def busca_entregadores(bares, trieEntr, raio):
+    """
+    Para cada bar, busca entregadores dentro do raio usando geohash + 8 vizinhos
+    Retorna lista de (bar, entregador, distReta)
+    """
+    niveis = niveis_para_raio(raio)
+
+    resultado = []
+
+    for bar in bares:
+        geohashes = geohashes_vizinhos(bar.coordenada(), niveis)
+
+        vistos = set()
+        for gh in geohashes:
+            for entregador in trieEntr.busca_prefixo(gh):
+                if entregador.chave() in vistos:
+                    continue
+                vistos.add(entregador.chave())
+
+                distReta = entregador.distancia_reta(bar.coordenada())
+                if distReta <= raio:
+                    resultado.append((bar, entregador, distReta))
+
+    return resultado
+
+
 
 '''PODE APAGAR'''
 def geohash_coordenada(codGeohash):
@@ -156,20 +218,6 @@ def geohash_coordenada(codGeohash):
     longitude = (intervaloLong[0] + intervaloLong[1]) / 2
 
     return Coordenada(latitude, longitude)
-
-def dimensao_celula():
-    # NIVEIS caracteres * 5 bits = NIVEIS*5 bits alternados
-    totalBits = NIVEIS * 5
-
-    # caso NIVEIS for impar, bitsLong continuar ocupando as poicoes pares,
-    # mas tera um bit a mais que bitsLat
-    bitsLong = (totalBits + 1) // 2   # posicoes pares (0, 2, 4, ...)
-    bitsLat  = totalBits // 2         # posicoes ímpares (1, 3, 5, ...)
-
-    dimLat  = (LATMAX - LATMIN) / (2 ** bitsLat)
-    dimLong = (LONGMAX - LONGMIN) / (2 ** bitsLong)
-
-    return dimLat, dimLong
 
 def geohashes_vizinhos(coord):
     dimLat, dimLong = dimensao_celula()

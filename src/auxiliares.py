@@ -140,10 +140,10 @@ def _geohashes_vizinhos(coordenada, niveis):
 
     return resultados
 
-def busca_entregadores(bares, trieEntregadores, raio):
+def busca_entregadores(bares, trieEntregadores, raio, G):
     """
     Para cada bar, busca entregadores dentro do raio usando geohash + 8 vizinhos
-    Retorna lista de (bar, entregador, distReta)
+    Retorna lista de (bar, entregador, distanciaReal)
     """
     niveis = _niveis_para_raio(raio)
 
@@ -159,9 +159,8 @@ def busca_entregadores(bares, trieEntregadores, raio):
                     continue
                 vistos.add(entregador.chave())
 
-                distReta = entregador.distancia_reta(bar.coordenada())
-                if distReta <= raio:
-                    resultado.append((bar, entregador, distReta))
+                if entregador.distancia_reta(bar.coordenada()) <= raio:
+                    resultado.append((bar, entregador, entregador.distancia_real(bar.coordenada(), G)))
 
     return resultado
 

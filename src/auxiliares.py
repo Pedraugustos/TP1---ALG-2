@@ -15,7 +15,7 @@ class Coordenada:
         self.lat = lat
         self.long = long
 
-    def geaohash(self):
+    def geohash(self):
         """
         Transforma coordenadas (latitude, longitude) em um codigo Geohash.
         """

@@ -1,8 +1,11 @@
+# entregadores
 from auxiliares import LATMIN, LATMAX, LONGMIN, LONGMAX
 from auxiliares import Coordenada
 import random
 import networkx as nx
 import osmnx as ox
+from shapely.geometry import Point
+from osmnx.projection import project_geometry
 
 class Entregador:
     def __init__(self, chave: str, coord: Coordenada):
@@ -30,22 +33,28 @@ class Entregador:
             coordenada.lat,  coordenada.long
         )
 
-    def distancia_real(self, coordenada, G):
+    def distancia_real(self, coordenada, Gproj):
         """
         Retorna a distancia (em metros) percorrendo as vias do grafo G.
         Se nao houver caminho, retorna a distancia em linha reta.
         """
+        crs = Gproj.graph["crs"]
+
+        # converte graus -> metros
+        pOrigem, _ = project_geometry(Point(self._coord.long, self._coord.lat), to_crs=crs)
+        pDestino, _ = project_geometry(Point(coordenada.long, coordenada.lat), to_crs=crs)
+
         # econtra os nos mais proximos
-        noOrigem = ox.distance.nearest_nodes(G, X=self._coord.long, Y=self._coord.lat)
-        no_destino = ox.distance.nearest_nodes(G, X=coordenada.long, Y=coordenada.lat)
+        noOrigem = ox.distance.nearest_nodes(Gproj, X=pOrigem.x, Y=pOrigem.y)
+        noDestino = ox.distance.nearest_nodes(Gproj, X=pDestino.x, Y=pDestino.y)
 
         # Mesmo no: distancia zero
-        if noOrigem == no_destino:
+        if noOrigem == noDestino:
             return 0.0
 
         # tenta o caminho pelas vias
         try:
-            rota = ox.routing.shortest_path(G, noOrigem, no_destino, weight="length")
+            rota = ox.routing.shortest_path(Gproj, noOrigem, noDestino, weight="length")
 
         # em caso de erro: distancia em linha reta
         except (nx.NetworkXNoPath, nx.NodeNotFound):
@@ -60,7 +69,7 @@ class Entregador:
         # rota = [A, B, C, D]
         # zip(...) = [(A, B), (B, C), (C, D)]
         for u, v in zip(rota[:-1], rota[1:]):
-            distancia += G.edges[u, v, 0].get("length", 0.0)
+            distancia += Gproj.edges[u, v, 0].get("length", 0.0)
 
         return distancia
 

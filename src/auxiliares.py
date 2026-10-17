@@ -1,4 +1,6 @@
+# auxiliares
 import math
+import osmnx as ox
 
 LATMIN, LATMAX = -90, 90
 LONGMIN, LONGMAX = -180, 180
@@ -140,7 +142,7 @@ def _geohashes_vizinhos(coordenada, niveis):
 
     return resultados
 
-def busca_entregadores(bares, trieEntregadores, raio, G):
+def busca_entregadores(bares, trieEntregadores, raio, Gproj):
     """
     Para cada bar, busca entregadores dentro do raio usando geohash + 8 vizinhos
     Retorna lista de (bar, entregador, distanciaReal)
@@ -160,7 +162,7 @@ def busca_entregadores(bares, trieEntregadores, raio, G):
                 vistos.add(entregador.chave())
 
                 if entregador.distancia_reta(bar.coordenada()) <= raio:
-                    resultado.append((bar, entregador, entregador.distancia_real(bar.coordenada(), G)))
+                    resultado.append((bar, entregador, entregador.distancia_real(bar.coordenada(), Gproj)))
 
     return resultado
 

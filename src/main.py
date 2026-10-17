@@ -1,3 +1,4 @@
+# main
 import os
 import osmnx as ox
 import dash
@@ -24,6 +25,10 @@ else:
     G = ox.graph_from_place("Belo Horizonte, Brazil", network_type="drive")
     ox.save_graphml(G, caminhoGrafo)
     print("Grafo baixado e salvo em disco.")
+
+# projeta o grafo
+Gproj = ox.project_graph(G)
+print("Grafo projetado.")
 
 # numero de entregadores a ser gerado
 N = 1000
@@ -64,7 +69,7 @@ raio = 2000
 
 baresBuscados = trieBar.busca_prefixo(prefixo)
 
-resultado = busca_entregadores(baresBuscados, trieEntr, raio)
+resultado = busca_entregadores(baresBuscados, trieEntr, raio, Gproj)
 
 '''
 resultado = []

@@ -1,3 +1,4 @@
+# bar
 from auxiliares import Coordenada
 import csv
 

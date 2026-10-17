@@ -72,10 +72,10 @@ class Coordenada:
         
         return codGeohash
 
-def _niveis_para_raio(raioMestros):
+def _niveis_para_raio(raioMetros):
     """
     Retorna o maior numero de caracteres do geohash cuja celula
-    cobre pelo menos 2*raioMestros em latitude e longitude.
+    cobre pelo menos 2*raioMetros em latitude e longitude.
 
     Quanto mais caracteres, menor a celula e menos candidatos a filtrar.
     """
@@ -98,7 +98,7 @@ def _niveis_para_raio(raioMestros):
         dimLongM = dimLong * mPorGrauLong
 
         # enquanto a celula ainda cobre o raio, avanca
-        if dimLatM >= 2 * raioMestros and dimLongM >= 2 * raioMestros:
+        if dimLatM >= 2 * raioMetros and dimLongM >= 2 * raioMetros:
             ultimoNivel = niveis
         else:
             break
@@ -118,7 +118,7 @@ def _dimensao_celula(niveis):
 
     return dimLat, dimLong
 
-def _geohashes_vizinhos(coord, niveis):
+def _geohashes_vizinhos(coordenada, niveis):
     """
     Retorna os 9 geohashes (centro + 8 vizinhos) no nivel informado
     """
@@ -127,8 +127,8 @@ def _geohashes_vizinhos(coord, niveis):
     resultados = []
     for dirY in (-1, 0, 1):
         for dirX in (-1, 0, 1):
-            latViz  = coord.lat  + dirY * dimLat
-            longViz = coord.long + dirX * dimLong
+            latViz  = coordenada.lat  + dirY * dimLat
+            longViz = coordenada.long + dirX * dimLong
 
             if not (LATMIN < latViz < LATMAX):
                 continue
@@ -140,7 +140,7 @@ def _geohashes_vizinhos(coord, niveis):
 
     return resultados
 
-def busca_entregadores(bares, trieEntr, raio):
+def busca_entregadores(bares, trieEntregadores, raio):
     """
     Para cada bar, busca entregadores dentro do raio usando geohash + 8 vizinhos
     Retorna lista de (bar, entregador, distReta)
@@ -154,7 +154,7 @@ def busca_entregadores(bares, trieEntr, raio):
 
         vistos = set()
         for gh in geohashes:
-            for entregador in trieEntr.busca_prefixo(gh):
+            for entregador in trieEntregadores.busca_prefixo(gh):
                 if entregador.chave() in vistos:
                     continue
                 vistos.add(entregador.chave())

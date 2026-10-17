@@ -5,7 +5,8 @@ from dash import html
 import dash_leaflet as dl
 from triecompacta import TRIECompacta
 '''PODE APAGAR AUXILIARES'''
-from auxiliares import geohash_coordenada, busca_entregadores
+#from auxiliares import geohash_coordenada
+from auxiliares import busca_entregadores
 from bar import le_bares
 from entregador import gera_entregadores, encontra_vias_proximas
 

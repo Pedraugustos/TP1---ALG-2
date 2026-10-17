@@ -1,5 +1,4 @@
 from auxiliares import Coordenada
-from auxiliares import coordenada_geohash
 import csv
 
 class BarSemCoordenadaError(ValueError):

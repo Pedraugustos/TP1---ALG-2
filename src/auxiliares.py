@@ -72,67 +72,10 @@ class Coordenada:
         
         return codGeohash
 
-def coordenada_geohash(coordenada):
-    """
-    Transforma coordenadas (latitude, longitude) em um codigo Geohash.
-    """
-
-    # verifica se a coordenada esta dentro do intervalo aceito
-    if not (LATMIN < coordenada.lat < LATMAX):
-        raise ValueError(f"Latitude deve estar no intervalo ({LATMIN}, {LATMAX}).")
-
-    if not (LONGMIN < coordenada.long < LONGMAX):
-        raise ValueError(f"Longitude deve estar no intervalo ({LONGMIN}, {LONGMAX}).")
-
-    lat = ESTADOINICIAL
-
-    intervaloLat = [LATMIN, LATMAX]
-    intervaloLong = [LONGMIN, LONGMAX]
-
-    codGeohash = ""
-
-    for _ in range(0, NIVEIS):
-        binario = 0
-
-        # calcula um caractere do geohash
-        for i in range(0, 5):
-            binario <<= 1
-            # 1: lattitude/longitude eh maior ou igual a media
-            # 0: caso contrario
-
-            if lat: # verifiar latitude
-                media = (intervaloLat[0] + intervaloLat[1]) / 2
-
-                if coordenada.lat >= media:
-                    binario += 1
-                    intervaloLat[0] = media
-
-                else:
-                    intervaloLat[1] = media
-
-                lat = False
-
-            else: # verifcar longitude
-                media = (intervaloLong[0] + intervaloLong[1]) / 2
-
-                if coordenada.long >= media:
-                    binario += 1 
-                    intervaloLong[0] = media
-
-                else:
-                    intervaloLong[1] = media
-                
-                lat = True
-        
-        # converte binario para a base 32
-        codGeohash += BASE32[binario]
-
-    return codGeohash
-
-def niveis_para_raio(raioMestros):
+def _niveis_para_raio(raioMetros):
     """
     Retorna o maior numero de caracteres do geohash cuja celula
-    cobre pelo menos 2*raioMestros em latitude e longitude.
+    cobre pelo menos 2*raioMetros em latitude e longitude.
 
     Quanto mais caracteres, menor a celula e menos candidatos a filtrar.
     """
@@ -155,14 +98,14 @@ def niveis_para_raio(raioMestros):
         dimLongM = dimLong * mPorGrauLong
 
         # enquanto a celula ainda cobre o raio, avanca
-        if dimLatM >= 2 * raioMestros and dimLongM >= 2 * raioMestros:
+        if dimLatM >= 2 * raioMetros and dimLongM >= 2 * raioMetros:
             ultimoNivel = niveis
         else:
             break
 
     return ultimoNivel
 
-def dimensao_celula(niveis):
+def _dimensao_celula(niveis):
     """
     Retorna o tamanho da celula (em graus) para o nivel informado
     """
@@ -175,43 +118,43 @@ def dimensao_celula(niveis):
 
     return dimLat, dimLong
 
-def geohashes_vizinhos(coord, niveis):
+def _geohashes_vizinhos(coordenada, niveis):
     """
     Retorna os 9 geohashes (centro + 8 vizinhos) no nivel informado
     """
-    dimLat, dimLong = dimensao_celula(niveis)
+    dimLat, dimLong = _dimensao_celula(niveis)
 
     resultados = []
     for dirY in (-1, 0, 1):
         for dirX in (-1, 0, 1):
-            latViz  = coord.lat  + dirY * dimLat
-            longViz = coord.long + dirX * dimLong
+            latViz  = coordenada.lat  + dirY * dimLat
+            longViz = coordenada.long + dirX * dimLong
 
             if not (LATMIN < latViz < LATMAX):
                 continue
             if not (LONGMIN < longViz < LONGMAX):
                 continue
 
-            gh = coordenada_geohash(Coordenada(latViz, longViz))[:niveis]
+            gh = (Coordenada(latViz, longViz)).geohash()[:niveis]
             resultados.append(gh)
 
     return resultados
 
-def busca_entregadores(bares, trieEntr, raio):
+def busca_entregadores(bares, trieEntregadores, raio):
     """
     Para cada bar, busca entregadores dentro do raio usando geohash + 8 vizinhos
     Retorna lista de (bar, entregador, distReta)
     """
-    niveis = niveis_para_raio(raio)
+    niveis = _niveis_para_raio(raio)
 
     resultado = []
 
     for bar in bares:
-        geohashes = geohashes_vizinhos(bar.coordenada(), niveis)
+        geohashes = _geohashes_vizinhos(bar.coordenada(), niveis)
 
         vistos = set()
         for gh in geohashes:
-            for entregador in trieEntr.busca_prefixo(gh):
+            for entregador in trieEntregadores.busca_prefixo(gh):
                 if entregador.chave() in vistos:
                     continue
                 vistos.add(entregador.chave())
@@ -224,8 +167,8 @@ def busca_entregadores(bares, trieEntr, raio):
 
 
 
-'''PODE APAGAR'''
-def geohash_coordenada(codGeohash):
+'''
+def _geohash_coordenada(codGeohash):
     # verifica tamanho e alfabeto do geohash
     if len(codGeohash) != NIVEIS:
         raise ValueError(f"Geohash deve ter {NIVEIS} caracteres.")
@@ -275,3 +218,5 @@ def geohash_coordenada(codGeohash):
     longitude = (intervaloLong[0] + intervaloLong[1]) / 2
 
     return Coordenada(latitude, longitude)
+
+'''

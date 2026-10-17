@@ -1,6 +1,5 @@
 from auxiliares import LATMIN, LATMAX, LONGMIN, LONGMAX
 from auxiliares import Coordenada
-from auxiliares import coordenada_geohash
 import random
 from osmnx import distance
 
@@ -22,7 +21,7 @@ class Entregador:
         return self._coord.long
 
     def geohash(self):
-        return coordenada_geohash(self._coord)
+        return self._coord.geohash()
 
     def distancia_reta(self, coordenada):
         return distance.great_circle(

@@ -24,6 +24,9 @@ class Bar:
     def coordenada(self):
         return self._ender.coord
 
+    def geohash(self):
+        return self._ender.coord.geohash()
+
     def latitude(self):
         return self._ender.coord.lat
 
@@ -32,9 +35,6 @@ class Bar:
 
     def nome(self):
         return self._nome
-
-    def geohash(self):
-        return coordenada_geohash(self._ender.coord)
 
 def le_bares(caminho):
     '''

@@ -1,7 +1,8 @@
 from auxiliares import LATMIN, LATMAX, LONGMIN, LONGMAX
 from auxiliares import Coordenada
 import random
-from osmnx import distance
+import networkx as nx
+import osmnx as ox
 
 class Entregador:
     def __init__(self, chave: str, coord: Coordenada):
@@ -24,10 +25,44 @@ class Entregador:
         return self._coord.geohash()
 
     def distancia_reta(self, coordenada):
-        return distance.great_circle(
+        return ox.distance.great_circle(
             self._coord.lat, self._coord.long,
             coordenada.lat,  coordenada.long
         )
+
+    def distancia_real(self, coordenada, G):
+        """
+        Retorna a distancia (em metros) percorrendo as vias do grafo G.
+        Se nao houver caminho, retorna a distancia em linha reta.
+        """
+        # econtra os nos mais proximos
+        noOrigem = ox.distance.nearest_nodes(G, X=self._coord.long, Y=self._coord.lat)
+        no_destino = ox.distance.nearest_nodes(G, X=coordenada.long, Y=coordenada.lat)
+
+        # Mesmo no: distancia zero
+        if noOrigem == no_destino:
+            return 0.0
+
+        # tenta o caminho pelas vias
+        try:
+            rota = ox.routing.shortest_path(G, noOrigem, no_destino, weight="length")
+
+        # em caso de erro: distancia em linha reta
+        except (nx.NetworkXNoPath, nx.NodeNotFound):
+            return self.distancia_reta(coordenada)
+
+        if rota is None:
+            return self.distancia_reta(coordenada)
+
+        # soma os comprimentos
+        distancia = 0.0
+
+        # rota = [A, B, C, D]
+        # zip(...) = [(A, B), (B, C), (C, D)]
+        for u, v in zip(rota[:-1], rota[1:]):
+            distancia += G.edges[u, v, 0].get("length", 0.0)
+
+        return distancia
 
 # quanto menor sigma, mais perto dos bares estarao os entregadores
 def gera_entregadores(bares, N, sigma=0.006, maxTentativas=50):
@@ -83,7 +118,7 @@ def encontra_vias_proximas(entregadores, G):
     '''
     longitudes = [e.longitude() for e in entregadores]
     latitudes = [e.latitude() for e in entregadores]
-    listaArestas = distance.nearest_edges(G, longitudes, latitudes)
+    listaArestas = ox.distance.nearest_edges(G, longitudes, latitudes)
 
     arestas = list(zip(entregadores, listaArestas))  
     

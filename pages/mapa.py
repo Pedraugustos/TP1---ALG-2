@@ -11,12 +11,14 @@ import osmnx as ox
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.triecompacta import TRIECompacta
-from src.auxiliares import busca_entregadores, cria_tabela
+from src.auxiliares import busca_inteligente, busca_entregadores, cria_tabela
 from src.bar import le_bares
 from src.entregador import gera_entregadores, encontra_vias_proximas
 
 LATREGMIN, LATREGMAX = -20.1, -19.7
 LONGREGMIN, LONGREGMAX = -44.1, -43.8
+
+LIMITE_BARES = 10
 
 # Registrador da página atual
 dash.register_page(__name__, path='/mapa', name='Resultado')
@@ -94,18 +96,47 @@ def executar_main(dados_recebidos):
         for entregador in entregadores:
             trieEntr.insere(entregador.geohash(), entregador)
 
-        # arvore TRIE COMPACTA para bares
+        # arvore TRIE COMPACTA para bares (nome)
         trieBar = TRIECompacta()
 
         # insere cada bar na arvore
         for bar in bares:
             trieBar.insere(bar.nome(), bar)
 
-        prefixo = nome_bar
+        # arvore TRIE COMPACTA para bares (endereco)
+        trieEnder = TRIECompacta()
+        for bar in bares:
+            trieEnder.insere(bar.chave_endereco(), bar)
+
+        # --- BUSCA ---
+        #nome_bar = str(dados_recebidos.get("nome_bar") or "")
+        endereco_bar = str(dados_recebidos.get("endereco") or "").upper()
+
+        prefixoBar = nome_bar
         raio = raio_
 
         # Busca os bares que batem com o prefixo do nome digitado
-        bares = trieBar.busca_prefixo(prefixo)
+        bares = busca_inteligente(trieBar, trieEnder, prefixoBar, endereco_bar)
+
+        if len(bares) == 0:
+            return html.Div([
+                html.H3("Nenhum bar encontrado", style={'color': '#c0392b'}),
+                html.P("Verifique o nome ou o endereço informado e tente novamente.",
+                    style={'color': 'white'}),
+                dcc.Link("← Voltar e tentar de novo", href="/", className="btn-voltar"),
+            ], style={'textAlign': 'center', 'padding': '40px'})
+
+        if len(bares) > LIMITE_BARES:
+            return html.Div([
+                html.H3(f"Muitos bares encontrados! ({len(bares)})",
+                        style={'color': '#e67e22'}),
+                html.P(
+                    f"A busca retornou {len(bares)} bares! "
+                    "Seja mais específico: informe mais caracteres do nome ou do endereço.",
+                    style={'color': 'white'}
+                ),
+                dcc.Link("← Voltar e refinar a busca", href="/", className="btn-voltar"),
+            ], style={'textAlign': 'center', 'padding': '40px'})
         
         # Chama a função que encontra os entregadores dentro do raio do bar
         resultado = busca_entregadores(bares, trieEntr, raio, Gproj)
@@ -115,7 +146,8 @@ def executar_main(dados_recebidos):
         #cria a tabela com os dados dos entregadores
         tabela = cria_tabela(resultado, VELOCIDADE)
 
-        CORES = ['#e74c3c', '#f1c40f', '#3498db', '#9b59b6', '#e67e22']
+        CORES = ['#e74c3c', "#f843bc", '#f1c40f', '#3498db', '#9b59b6', '#e67e22']
+
         
         # agrupa entregadores por bar
         entregadoresPorBar = {}

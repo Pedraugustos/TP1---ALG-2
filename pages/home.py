@@ -43,7 +43,7 @@ layout = html.Div([
             className="campo-label"
         ),
         html.P(
-            "Digite o nome exato ou o prefixo do bar", 
+            "Digite o nome do bar ou o prefixo dele", 
             className="campo-descricao"
         ),
         html.Div(
@@ -57,8 +57,30 @@ layout = html.Div([
             style={'width': '100%'}
         )
     ], className="campo-card"),
+
+    # CARD 3 - Inserir o endereço
+    html.Div([
+        html.Label(
+            "Endereço",
+            className="campo-label"
+        ),
+        html.P(
+            "Digite o endereço do bar ou o prefixo dele",
+            className="campo-descricao"
+        ),
+        html.Div(
+            dcc.Input(
+                id='input-endereco',
+                type='text',
+                placeholder="Ex: RUA DA BAHIA 1234",
+                className="campo-input",
+                style={'width': '100%', 'boxSizing': 'border-box'}
+            ),
+            style={'width': '100%'}
+        )
+    ], className="campo-card"),
     
-    # CARD 3 - Inserir o raio de busca
+    # CARD 4 - Inserir o raio de busca
     html.Div([
         html.Label(
             "Raio de busca (metros) *", 
@@ -111,23 +133,33 @@ o dash é 'avisado' e roda a função salvar_e_redirecionar
         # Essas informações são lidas no exato momento em que o botão é clicado.
         State('input-numero', 'value'),
         State('input-nome', 'value'),
+        State('input-endereco', 'value'),
         State('input-raio', 'value')
     ],
     
     prevent_initial_call=True  #Impede que a função seja efetuada quando a página é carregada.
 )
-def salvar_e_redirecionar(n_clicks, numero, nome, raio):
+def salvar_e_redirecionar(n_clicks, numero, nome, endereco, raio):
     '''
     Confere se o botão foi clicado e se nenhum dos componenetes é vazio, 
     caso seja a página não é atualizada
     '''
-    if not n_clicks or numero is None or nome is None or raio is None:
+    # nome pode ser vazio se o endereco for informado
+    if (not n_clicks) or (numero is None) or (raio is None):
+        return dash.no_update, dash.no_update
+
+    # pelo menos um dos dois (nome ou endereco) precisa estar preenchido
+    nome = (nome or "").strip()
+    endereco = (endereco or "").strip()
+
+    if (not nome) and (not endereco):
         return dash.no_update, dash.no_update
 
     # Monta o dicionário juntando os valores que o usuário digitou.
     caixa_de_dados = {
         "numero_entregadores": numero,
         "nome_bar": nome,
+        "endereco": endereco,
         "raio": raio
     }
 

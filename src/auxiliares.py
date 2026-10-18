@@ -177,6 +177,44 @@ def cria_tabela(resultado, velocidade):
 
     return linhas
 
+def busca_por_endereco(trieEnder, prefixoEndereco):
+    """
+    Busca bares cujo endereço começa com o prefixo informado.
+    Retorna uma lista de bares (pode ser vazia).
+    """
+    texto = prefixoEndereco.strip().upper()
+    return trieEnder.busca_prefixo(texto)
+
+
+def busca_inteligente(trieBar, trieEnder, prefixoBar, prefixoEndereco):
+    """
+    Implementa duas opções de pesquisa:
+        1) prefixoBar não vazio: busca por prefixoBar (e filtra por prefixoEndereco, se informado)
+        2) prefixoBar vazio + prefixoEndereco: busca por prefixoEndereco
+    Retorna uma lista de bares (pode ser vazia).
+    """
+    prefixoBar = (prefixoBar or "").strip().upper()
+    prefixoEndereco = (prefixoEndereco or "").strip().upper()
+
+    # Caso 1: nome do bar informado
+    if prefixoBar:
+        baresNome = trieBar.busca_prefixo(prefixoBar)
+
+        if not prefixoEndereco:
+            return baresNome
+
+        # filtra por endereço
+        return [
+            b for b in baresNome
+            if b.chave_endereco().startswith(prefixoEndereco)
+        ]
+
+    # Caso 2: nome vazio: busca por endereço
+    if not prefixoEndereco:
+        return []
+
+    return busca_por_endereco(trieEnder, prefixoEndereco)
+
 '''
 def _geohash_coordenada(codGeohash):
     # verifica tamanho e alfabeto do geohash

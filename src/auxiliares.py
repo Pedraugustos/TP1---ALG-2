@@ -164,7 +164,18 @@ def busca_entregadores(bares, trieEntregadores, raio, Gproj):
 
     return resultado
 
+def cria_tabela(resultado, velocidade):
+    """
+    Recebe a lista de (bar, entregador, distanciaReal) e uma velocidade (m/s).
+    Retorna uma lista de tuplas (nomeBar, chaveEntregador, distanciaReal, tempoSegundos),
+    ordenada por nome do bar e pela distância.
+    """
+    linhas = [(bar.nome(), entregador.chave(), distancia, distancia / velocidade) for bar, entregador, distancia in resultado]
 
+    # ordena por nome do bar, distancia e tempo
+    linhas.sort(key=lambda x: (x[0], x[2]))
+
+    return linhas
 
 '''
 def _geohash_coordenada(codGeohash):

@@ -11,7 +11,7 @@ import osmnx as ox
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.triecompacta import TRIECompacta
-from src.auxiliares import busca_entregadores
+from src.auxiliares import busca_entregadores, cria_tabela
 from src.bar import le_bares
 from src.entregador import gera_entregadores, encontra_vias_proximas
 
@@ -110,7 +110,12 @@ def executar_main(dados_recebidos):
         # Chama a função que encontra os entregadores dentro do raio do bar
         resultado = busca_entregadores(bares, trieEntr, raio, Gproj)
 
-        CORES = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#e67e22', '#1abc9c']
+        VELOCIDADE = 8  # m/s corresponde a aproximadamente 30km
+
+        #cria a tabela com os dados dos entregadores
+        tabela = cria_tabela(resultado, VELOCIDADE)
+
+        CORES = ['#e74c3c', '#f1c40f', '#3498db', '#9b59b6', '#e67e22']
         
         # agrupa entregadores por bar
         entregadoresPorBar = {}
@@ -215,6 +220,33 @@ def executar_main(dados_recebidos):
             'borderRadius': '10px', 'boxShadow': '0 4px 6px rgba(0,0,0,0.2)', 'border': '1px solid #e5dcc8'
         })
 
+        # monta a tabela HTML dos entregadores selecionados
+        cabecalho = html.Thead(html.Tr([
+            html.Th("Bar"),
+            html.Th("Entregador"),
+            html.Th("Dist. real (m)", className="num"),
+            html.Th("Tempo (s)", className="num"),
+        ]))
+
+        linhas = []
+        for nomeBar, chaveEntr, dist, tempo in tabela:
+            corLinha = corPorBar.get(nomeBar, '#999999')
+            linhas.append(html.Tr([
+                html.Td([html.Span(className="bolinha-bar"), nomeBar], className="nome-bar"),
+                html.Td(str(chaveEntr)),
+                html.Td(f"{dist:.1f}", className="num"),
+                html.Td(f"{tempo:.1f}", className="num"),
+            ], style={'--cor-bar': corLinha}))
+
+        tabela_html = html.Div([
+            html.H4("Entregadores selecionados", className="tabela-titulo"),
+            html.Div(
+                html.Table([cabecalho, html.Tbody(linhas)], className="tabela-entregadores"),
+                className="tabela-scroll"
+            )
+        ], className="tabela-painel")
+
+
         
         # Envolve a legenda e o mapa em uma div com position: relative.
         # Isso permite que a legenda flutue no canto do mapa.
@@ -230,7 +262,8 @@ def executar_main(dados_recebidos):
                     *marcEntregadores,   # entregadores capturados por cima (opacidade mediana)
                 ],
                 style={'width': '100%', 'height': '70vh'}
-            )
+            ),
+            tabela_html
         ], style={'position': 'relative'})
 
     except Exception as e:

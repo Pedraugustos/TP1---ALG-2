@@ -146,3 +146,68 @@ body {
     background: transparent !important;
     border: none !important;
 }
+
+.tabela-painel {
+    padding: 15px;
+    background-color: rgba(255, 250, 240, 0.95);
+    border-top: 1px solid #e5dcc8;
+}
+
+.tabela-titulo {
+    margin: 0 0 10px 0;
+    color: #1565C0;
+    border-bottom: 2px solid #e5dcc8;
+    padding-bottom: 5px;
+}
+
+.tabela-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: 8px;
+}
+
+.tabela-entregadores {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabela-entregadores th {
+    padding: 10px 12px;
+    text-align: left;
+    background-color: #1565C0;
+    color: white;
+    position: sticky;
+    top: 0;
+    font-size: 14px;
+}
+
+.tabela-entregadores td {
+    padding: 8px 12px;
+}
+
+.tabela-entregadores .num {
+    text-align: right;
+}
+
+.tabela-entregadores .nome-bar {
+    font-weight: bold;
+}
+
+.tabela-entregadores tbody tr {
+    background-color: color-mix(in srgb, var(--cor-bar) 13%, transparent);
+    border-left: 6px solid var(--cor-bar);
+    border-bottom: 1px solid #e5dcc8;
+    color: #333;
+}
+
+.bolinha-bar {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--cor-bar);
+    margin-right: 8px;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}

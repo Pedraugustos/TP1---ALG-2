@@ -141,7 +141,7 @@ def executar_main(dados_recebidos):
         # Chama a função que encontra os entregadores dentro do raio do bar
         resultado = busca_entregadores(bares, trieEntr, raio, Gproj)
 
-        CORES = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#e67e22', '#1abc9c']
+        CORES = ['#e74c3c', "#f843bc", '#f1c40f', '#3498db', '#9b59b6', '#e67e22']
         
         # agrupa entregadores por bar
         entregadoresPorBar = {}

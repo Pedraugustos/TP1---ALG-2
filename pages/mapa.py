@@ -18,7 +18,7 @@ from src.entregador import gera_entregadores, encontra_vias_proximas
 LATREGMIN, LATREGMAX = -20.1, -19.7
 LONGREGMIN, LONGREGMAX = -44.1, -43.8
 
-LIMITE_BARES = 10
+LIMITE_BARES = 2
 
 # Registrador da página atual
 dash.register_page(__name__, path='/mapa', name='Resultado')
@@ -121,17 +121,19 @@ def executar_main(dados_recebidos):
         if len(bares) == 0:
             return html.Div([
                 html.H3("Nenhum bar encontrado", style={'color': '#c0392b'}),
-                html.P("Verifique o nome ou o endereço informado e tente novamente."),
+                html.P("Verifique o nome ou o endereço informado e tente novamente.",
+                    style={'color': 'white'}),
                 dcc.Link("← Voltar e tentar de novo", href="/", className="btn-voltar"),
             ], style={'textAlign': 'center', 'padding': '40px'})
 
         if len(bares) > LIMITE_BARES:
             return html.Div([
-                html.H3(f"Muitos bares encontrados ({len(bares)})",
+                html.H3(f"Muitos bares encontrados! ({len(bares)})",
                         style={'color': '#e67e22'}),
                 html.P(
-                    f"A busca retornou {len(bares)} bares, o que é demais para plotar. "
-                    "Seja mais específico: informe mais caracteres do nome ou do endereço."
+                    f"A busca retornou {len(bares)} bares! "
+                    "Seja mais específico: informe mais caracteres do nome ou do endereço.",
+                    style={'color': 'white'}
                 ),
                 dcc.Link("← Voltar e refinar a busca", href="/", className="btn-voltar"),
             ], style={'textAlign': 'center', 'padding': '40px'})

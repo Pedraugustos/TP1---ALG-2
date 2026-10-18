@@ -1,5 +1,4 @@
-# bar
-from auxiliares import Coordenada
+from src.auxiliares import Coordenada
 import csv
 
 class BarSemCoordenadaError(ValueError):

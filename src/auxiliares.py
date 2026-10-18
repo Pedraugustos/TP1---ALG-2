@@ -1,6 +1,4 @@
-# auxiliares
 import math
-import osmnx as ox
 
 LATMIN, LATMAX = -90, 90
 LONGMIN, LONGMAX = -180, 180

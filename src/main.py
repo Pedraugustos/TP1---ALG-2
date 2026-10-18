@@ -1,4 +1,3 @@
-# main
 import os
 import osmnx as ox
 import dash

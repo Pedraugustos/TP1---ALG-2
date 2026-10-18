@@ -1,6 +1,5 @@
-# entregadores
-from auxiliares import LATMIN, LATMAX, LONGMIN, LONGMAX
-from auxiliares import Coordenada
+from src.auxiliares import LATMIN, LATMAX, LONGMIN, LONGMAX
+from src.auxiliares import Coordenada
 import random
 import networkx as nx
 import osmnx as ox

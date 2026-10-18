@@ -1,0 +1,148 @@
+/* CSS utilizado para estilizar a página */
+
+body {
+    background-color: #1A1033;
+    font-family: "Poppins", sans-serif;
+    font-weight: normal;
+    letter-spacing: 2px;
+}
+
+.titulo-principal {
+    font-family: "Poppins", sans-serif;
+    font-size: 65px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #3D5AFE;
+    text-align: center; 
+    margin-bottom: 30px;
+}
+
+.subtitulo {
+    font-family: "Poppins", sans-serif;
+    font-size: 25px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #FF3D81;
+    text-align: center; 
+    margin-bottom: 30px;
+}
+
+.campo-card {
+    width: 100%;
+    max-width: 620px;
+    box-sizing: border-box;
+    margin: 25px auto;
+    padding: 24px;
+    background-color: #fffaf0;
+    border: 1px solid #e5dcc8;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
+}
+
+
+.campo-label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #292929;
+    letter-spacing: normal; 
+}
+
+.campo-descricao {
+    margin: 0 0 16px 0;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #858585;
+    letter-spacing: normal;
+}
+
+
+.campo-card .campo-input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 14px;
+    font-family: Arial, sans-serif;
+    font-size: 15px; 
+    letter-spacing: 0.5px; 
+    color: #292929;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 7px;
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.campo-card .campo-input::placeholder {
+    color: #adb5bd;
+    opacity: 1;
+    font-size: 15px;
+    letter-spacing: normal;
+}
+
+.campo-card .campo-input:focus {
+    border-color: #8b9dc3;
+    box-shadow: 0 0 0 2px rgba(139, 157, 195, 0.15);
+}
+
+
+.campo-card .campo-input::-webkit-inner-spin-button,
+.campo-card .campo-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.btn-enviar {
+    display: block;
+    width: 100%;
+    max-width: 620px;
+    margin: 20px auto;
+    padding: 14px 20px;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #FFC400;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-enviar:hover {
+    background-color: #3D5AFE;
+}
+
+
+.btn-voltar {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #FFC400; 
+    color: #ffffff !important;            
+    text-decoration: none !important;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btn-voltar:hover {
+    background-color: #3D5AFE;
+    color: #ffffff !important;
+}
+
+.bar-pin-icon {
+    background: transparent !important;
+    border: none !important;
+}

@@ -18,7 +18,7 @@ from src.entregador import gera_entregadores, encontra_vias_proximas
 LATREGMIN, LATREGMAX = -20.1, -19.7
 LONGREGMIN, LONGREGMAX = -44.1, -43.8
 
-LIMITE_BARES = 2
+LIMITE_BARES = 10
 
 # Registrador da página atual
 dash.register_page(__name__, path='/mapa', name='Resultado')

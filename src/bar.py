@@ -35,9 +35,16 @@ class Bar:
     def nome(self):
         return self._nome
 
+    def chave_endereco(self):
+        """
+        Gera uma string padronizada que representa o endereço completo do bar.
+        """
+        partes = [self._ender.tipoVia, self._ender.nomeVia, str(self._ender.num), self._ender.bairro]
+        return " ".join(p.strip().upper() for p in partes if p)
+
 def le_bares(caminho):
     '''
-    Processa todos o bares presentes em um arquivo .csv.
+    Processa todos o bares presentes de um arquivo .csv.
     '''
     bares = []
     erros = []

@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import dash
 from dash import html, dcc, Input, Output
@@ -122,12 +123,14 @@ def executar_main(dados_recebidos):
             trieEnder.insere(bar.chave_endereco(), bar)
 
         # --- BUSCA ---
-        endereco_bar = str(dados_recebidos.get("endereco") or "").upper()
+        enderecoBar = str(dados_recebidos.get("endereco") or "").upper()
+        enderecoBar = re.sub(r'[,.;]', ' ', enderecoBar) # troca virgula/ponto por espaço
+        enderecoBar = " ".join(enderecoBar.split()) # remove espacos extras
 
         prefixoBar = nomeBar
 
         # busca os bares que batem com o prefixo do nome digitado
-        bares = busca_inteligente(trieBar, trieEnder, prefixoBar, endereco_bar)
+        bares = busca_inteligente(trieBar, trieEnder, prefixoBar, enderecoBar)
 
         if len(bares) == 0:
             return html.Div([
@@ -154,8 +157,6 @@ def executar_main(dados_recebidos):
 
         # cria a tabela com os dados dos entregadores
         tabela = cria_tabela(resultado, VELOCIDADE)
-
-        CORES = ['#e74c3c', "#f843bc", '#f1c40f', '#3498db', '#9b59b6', '#e67e22']
 
         # agrupa entregadores por bar
         entregadoresPorBar = {}
@@ -263,10 +264,10 @@ def executar_main(dados_recebidos):
 
         # monta a tabela HTML dos entregadores selecionados
         cabecalho = html.Thead(html.Tr([
-            html.Th("Bar"),
-            html.Th("Entregador"),
-            html.Th("Dist. real (m)", className="num"),
-            html.Th("Tempo (m)", className="num"),
+            html.Th("BAR"),
+            html.Th("ENTREGADOR"),
+            html.Th("DISTÂNCIA (m)", className="num"),
+            html.Th("TEMPO (min)", className="num"),
         ]))
 
         linhas = []

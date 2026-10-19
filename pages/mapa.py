@@ -207,7 +207,7 @@ def executar_main(dados_recebidos):
             marcBares.append(
                 dl.DivMarker(
                     position=[bar.latitude(), bar.longitude()],
-                    children=[dl.Tooltip(f"📍 Bar: {bar.nome()}")],
+                    children=[dl.Tooltip(f"BAR: {bar.nome()}")],
                     iconOptions=opcoes_icone
                 )
             )
@@ -232,7 +232,7 @@ def executar_main(dados_recebidos):
                     dl.CircleMarker(
                         center=[entregador.latitude(), entregador.longitude()],
                         radius=6, color=cor, weight=2, fill=True, fillColor=cor, fillOpacity=0.6,
-                        children=[dl.Tooltip(f"Entregador {entregador.chave()} — Bar: {nomeBar}")]
+                        children=[dl.Tooltip(f"Entregador {entregador.chave()} — BAR: {nomeBar}")]
                     )
                 )
 

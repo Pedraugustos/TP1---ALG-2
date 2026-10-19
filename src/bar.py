@@ -78,8 +78,10 @@ def le_bares(caminho):
                 erros.append(erro)
                 continue
 
-            # cria endereco
-            ''' .get("VALOR REAL", "VALOR ALTERNATIVO SE VALOR REAL FOR NULO")'''
+            # cria um endereco
+            # se a coluna nao possui valor, retorna "" (vazio)
+            # se ha espacos extras, remove
+            # converte para numero se todos os digitos sao numerais
             endereco = _Endereco(
                 tipoVia=linha.get("DESC_LOGRADOURO", "").strip(),
                 nomeVia=linha.get("NOME_LOGRADOURO", "").strip(),
@@ -89,10 +91,9 @@ def le_bares(caminho):
                 coord=Coordenada(lat, long)
             )
 
-            # cria o bar
+            # cria um bar
             nomeFant = (linha.get("NOME_FANTASIA") or "").strip()
             nome = nomeFant if nomeFant else (linha.get("NOME") or "").strip()
-
             bar = Bar(nome=nome, ender=endereco)
 
             bares.append(bar)

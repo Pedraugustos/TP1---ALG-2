@@ -181,15 +181,6 @@ def cria_tabela(resultado, velocidade):
 
     return linhas
 
-def busca_por_endereco(trieEnder, prefixoEndereco):
-    """
-    Busca bares cujo endereço começa com o prefixo informado.
-    Retorna uma lista de bares (pode ser vazia).
-    """
-    texto = prefixoEndereco.strip().upper()
-    return trieEnder.busca_prefixo(texto)
-
-
 def busca_inteligente(trieBar, trieEnder, prefixoBar, prefixoEndereco):
     """
     Implementa duas opções de pesquisa:
@@ -217,4 +208,4 @@ def busca_inteligente(trieBar, trieEnder, prefixoBar, prefixoEndereco):
     if not prefixoEndereco:
         return []
 
-    return busca_por_endereco(trieEnder, prefixoEndereco)
+    return trieEnder.busca_prefixo(prefixoEndereco)

@@ -12,20 +12,20 @@ ESTADOINICIAL = False
 
 class Coordenada:
     def __init__(self, lat: float, long: float):
+        # verifica se a coordenada esta dentro do intervalo aceito
+        if not (LATMIN < self.lat < LATMAX):
+            raise ValueError(f"Latitude deve estar no intervalo ({LATMIN}, {LATMAX}).")
+                
+        if not (LONGMIN < self.long < LONGMAX):
+            raise ValueError(f"Longitude deve estar no intervalo ({LONGMIN}, {LONGMAX}).")
+                
         self.lat = lat
         self.long = long
 
     def geohash(self):
         """
-        Transforma coordenadas (latitude, longitude) em um codigo Geohash.
+        Transforma coordenadas (latitude, longitude) em um código Geohash.
         """
-        
-        # verifica se a coordenada esta dentro do intervalo aceito
-        if not (LATMIN < self.lat < LATMAX):
-            raise ValueError(f"Latitude deve estar no intervalo ({LATMIN}, {LATMAX}).")
-        
-        if not (LONGMIN < self.long < LONGMAX):
-            raise ValueError(f"Longitude deve estar no intervalo ({LONGMIN}, {LONGMAX}).")
         
         lat = ESTADOINICIAL
         
@@ -74,10 +74,10 @@ class Coordenada:
 
 def _niveis_para_raio(raioMetros):
     """
-    Retorna o maior numero de caracteres do geohash cuja celula
-    cobre pelo menos 2*raioMetros em latitude e longitude.
+    Retorna o maior número de caracteres do código Geohash cuja
+    célula cobre pelo menos 2*raioMetros em latitude e longitude.
 
-    Quanto mais caracteres, menor a celula e menos candidatos a filtrar.
+    Quanto mais caracteres, menor a célula e menos candidatos a filtrar.
     """
 
     ultimoNivel = 1
@@ -91,7 +91,9 @@ def _niveis_para_raio(raioMetros):
         dimLong = (LONGMAX - LONGMIN) / (2 ** bitsLong)
 
         latMedia = (LATMIN + LATMAX) / 2
+        # um grau em latitude possui 111.320,00 km
         mPorGrauLat  = 111320.0
+        # um grau em longitude possui 111.320,00 * cos(grauLatitude km)
         mPorGrauLong = 111320.0 * math.cos(math.radians(latMedia))
 
         dimLatM = dimLat * mPorGrauLat
@@ -107,7 +109,7 @@ def _niveis_para_raio(raioMetros):
 
 def _dimensao_celula(niveis):
     """
-    Retorna o tamanho da celula (em graus) para o nivel informado
+    Retorna as dimensões da célula (em graus) para o nível informado.
     """
     totalBits = niveis * 5
     bitsLong = (totalBits + 1) // 2
@@ -120,12 +122,14 @@ def _dimensao_celula(niveis):
 
 def _geohashes_vizinhos(coordenada, niveis):
     """
-    Retorna os 9 geohashes (centro + 8 vizinhos) no nivel informado
+    Retorna 9 códigos Geohashes relativos às células (centro + 8 vizinhos) no nível informado.
     """
     dimLat, dimLong = _dimensao_celula(niveis)
 
     resultados = []
+    # deslocamento sul e norte
     for dirY in (-1, 0, 1):
+        # deslocamento oeste e leste
         for dirX in (-1, 0, 1):
             latViz  = coordenada.lat  + dirY * dimLat
             longViz = coordenada.long + dirX * dimLong
@@ -142,8 +146,8 @@ def _geohashes_vizinhos(coordenada, niveis):
 
 def busca_entregadores(bares, trieEntregadores, raio, Gproj):
     """
-    Para cada bar, busca entregadores dentro do raio usando geohash + 8 vizinhos
-    Retorna lista de (bar, entregador, distanciaReal)
+    Para cada bar, busca entregadores dentro do raio usando o código Geohash + 8 vizinhos.
+    Retorna lista de (bar, entregador, distanciaReal).
     """
     niveis = _niveis_para_raio(raio)
 
@@ -166,7 +170,7 @@ def busca_entregadores(bares, trieEntregadores, raio, Gproj):
 
 def cria_tabela(resultado, velocidade):
     """
-    Recebe a lista de (bar, entregador, distanciaReal) e uma velocidade (m/s).
+    Recebe uma lista de (bar, entregador, distanciaReal) e uma velocidade (m/s).
     Retorna uma lista de tuplas (nomeBar, chaveEntregador, distanciaReal, tempoSegundos),
     ordenada por nome do bar e pela distância.
     """
@@ -189,8 +193,8 @@ def busca_por_endereco(trieEnder, prefixoEndereco):
 def busca_inteligente(trieBar, trieEnder, prefixoBar, prefixoEndereco):
     """
     Implementa duas opções de pesquisa:
-        1) prefixoBar não vazio: busca por prefixoBar (e filtra por prefixoEndereco, se informado)
-        2) prefixoBar vazio + prefixoEndereco: busca por prefixoEndereco
+        1) prefixoBar não vazio: busca por prefixoBar (e filtra por prefixoEndereco, se informado);
+        2) prefixoBar vazio + prefixoEndereco: busca por prefixoEndereco.
     Retorna uma lista de bares (pode ser vazia).
     """
     prefixoBar = (prefixoBar or "").strip().upper()
@@ -214,57 +218,3 @@ def busca_inteligente(trieBar, trieEnder, prefixoBar, prefixoEndereco):
         return []
 
     return busca_por_endereco(trieEnder, prefixoEndereco)
-
-'''
-def _geohash_coordenada(codGeohash):
-    # verifica tamanho e alfabeto do geohash
-    if len(codGeohash) != NIVEIS:
-        raise ValueError(f"Geohash deve ter {NIVEIS} caracteres.")
-    
-    for c in codGeohash:
-        if c not in BASE32MAPA:
-            raise ValueError(f"Caractere inválido: {c!r}")
-
-    intervaloLat  = [LATMIN, LATMAX]
-    intervaloLong = [LONGMIN, LONGMAX]
-
-    lat = ESTADOINICIAL
-
-    for c in codGeohash:
-        valor = BASE32MAPA[c]
-
-        # analisa do mais significativo para o menos significativo
-        # shift = 4..0
-        for shift in range(4, -1, -1):
-            # extrai o bit
-            bit = (valor >> shift) & 1 
-
-            if lat: # verificar latitude
-                media = (intervaloLat[0] + intervaloLat[1]) / 2
-
-                if bit == 1: # metade superior
-                    intervaloLat[0] = media
-
-                else: #metade inferior
-                    intervaloLat[1] = media
-
-                lat = False
-
-            else: #verificar longitude
-                media = (intervaloLong[0] + intervaloLong[1]) / 2
-
-                if bit == 1:
-                    intervaloLong[0] = media
-
-                else:
-                    intervaloLong[1] = media
-
-                lat = True
-
-    # ponto medio do intervalo final
-    latitude  = (intervaloLat[0] + intervaloLat[1]) / 2
-    longitude = (intervaloLong[0] + intervaloLong[1]) / 2
-
-    return Coordenada(latitude, longitude)
-
-'''

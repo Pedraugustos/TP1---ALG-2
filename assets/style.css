@@ -1,5 +1,5 @@
-/* CSS utilizado para estilizar a página */
 
+/* Estilo geral da página */
 body {
     background-color: #1A1033;
     font-family: "Poppins", sans-serif;
@@ -7,80 +7,84 @@ body {
     letter-spacing: 2px;
 }
 
-.titulo-principal {
+/* Títulos */
+.titulo-principal,
+.subtitulo {
     font-family: "Poppins", sans-serif;
-    font-size: 65px;
-    letter-spacing: 1px;
     font-weight: bold;
-    color: #3D5AFE;
-    text-align: center; 
+    text-align: center;
+    letter-spacing: 1px;
     margin-bottom: 30px;
+}
+
+.titulo-principal {
+    font-size: 65px;
+    color: #3D5AFE;
 }
 
 .subtitulo {
-    font-family: "Poppins", sans-serif;
     font-size: 25px;
-    letter-spacing: 1px;
-    font-weight: bold;
     color: #FF3D81;
-    text-align: center; 
-    margin-bottom: 30px;
 }
 
+/* Cartão que agrupa os campos do formulário */
 .campo-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     width: 100%;
     max-width: 620px;
-    box-sizing: border-box;
     margin: 25px auto;
     padding: 24px;
     background-color: #fffaf0;
     border: 1px solid #e5dcc8;
     border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* Rótulos e descrições dos campos */
+.campo-label,
+.campo-descricao {
+    font-family: Arial, sans-serif;
+    letter-spacing: normal;
+}
 
 .campo-label {
     display: block;
     margin-bottom: 6px;
-    font-family: Arial, sans-serif;
     font-size: 18px;
     font-weight: 600;
     color: #292929;
-    letter-spacing: normal; 
 }
 
 .campo-descricao {
-    margin: 0 0 16px 0;
-    font-family: Arial, sans-serif;
+    margin: 0 0 16px;
     font-size: 15px;
     line-height: 1.5;
     color: #858585;
-    letter-spacing: normal;
 }
 
-
+/* Campos de entrada */
 .campo-card .campo-input {
+    box-sizing: border-box;
     display: block;
     width: 100%;
     min-width: 0;
     height: 46px;
-    box-sizing: border-box;
     margin: 0;
     padding: 0 14px;
     font-family: Arial, sans-serif;
-    font-size: 15px; 
-    letter-spacing: 0.5px; 
+    font-size: 15px;
+    letter-spacing: 0.5px;
     color: #292929;
-    background-color: #ffffff;
+    background-color: #fff;
     border: 1px solid #ced4da;
     border-radius: 7px;
     outline: none;
     box-shadow: none;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: border-color 0.2s ease-in-out,
+                box-shadow 0.2s ease-in-out;
 }
 
 .campo-card .campo-input::placeholder {
@@ -95,7 +99,7 @@ body {
     box-shadow: 0 0 0 2px rgba(139, 157, 195, 0.15);
 }
 
-
+/* Remove as setas dos campos numéricos em navegadores WebKit */
 .campo-card .campo-input::-webkit-inner-spin-button,
 .campo-card .campo-input::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -103,50 +107,52 @@ body {
     margin: 0;
 }
 
-.btn-enviar {
-    display: block;
-    width: 100%;
-    max-width: 620px;
-    margin: 20px auto;
-    padding: 14px 20px;
+/* Botões */
+.btn-enviar,
+.btn-voltar {
     font-family: Arial, sans-serif;
-    font-size: 18px;
     font-weight: bold;
-    color: #ffffff;
     background-color: #FFC400;
-    border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
-.btn-enviar:hover {
-    background-color: #3D5AFE;
+.btn-enviar {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 620px;
+    margin: 20px auto;
+    padding: 14px 20px;
+    font-size: 18px;
+    color: #fff;
+    border: none;
 }
-
 
 .btn-voltar {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #FFC400; 
-    color: #ffffff !important;            
+    color: #fff !important;
     text-decoration: none !important;
-    border-radius: 8px;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    transition: background-color 0.2s;
+}
+
+.btn-enviar:hover,
+.btn-voltar:hover {
+    background-color: #3D5AFE;
 }
 
 .btn-voltar:hover {
-    background-color: #3D5AFE;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
+/* Ícone personalizado dos bares no mapa */
 .bar-pin-icon {
     background: transparent !important;
     border: none !important;
 }
 
+/* Painel da tabela de entregadores */
 .tabela-painel {
     padding: 15px;
     background-color: rgba(255, 250, 240, 0.95);
@@ -154,18 +160,20 @@ body {
 }
 
 .tabela-titulo {
-    margin: 0 0 10px 0;
+    margin: 0 0 10px;
+    padding-bottom: 5px;
     color: #1565C0;
     border-bottom: 2px solid #e5dcc8;
-    padding-bottom: 5px;
 }
 
+/* Área com rolagem vertical */
 .tabela-scroll {
     max-height: 300px;
     overflow-y: auto;
     border-radius: 8px;
 }
 
+/* Estrutura e cabeçalho da tabela */
 .tabela-entregadores {
     width: 100%;
     border-collapse: collapse;
@@ -173,13 +181,13 @@ body {
 }
 
 .tabela-entregadores th {
-    padding: 10px 12px;
-    text-align: left;
-    background-color: #1565C0;
-    color: white;
     position: sticky;
     top: 0;
+    padding: 10px 12px;
     font-size: 14px;
+    text-align: left;
+    color: #fff;
+    background-color: #1565C0;
 }
 
 .tabela-entregadores td {
@@ -194,6 +202,7 @@ body {
     font-weight: bold;
 }
 
+/* Cor de cada linha associada ao bar correspondente */
 .tabela-entregadores tbody tr {
     background-color: color-mix(in srgb, var(--cor-bar) 13%, transparent);
     border-left: 6px solid var(--cor-bar);
@@ -201,13 +210,14 @@ body {
     color: #333;
 }
 
+/* Círculo que identifica a cor do bar na tabela */
 .bolinha-bar {
     display: inline-block;
     width: 12px;
     height: 12px;
-    border-radius: 50%;
-    background-color: var(--cor-bar);
     margin-right: 8px;
-    border: 2px solid white;
+    background-color: var(--cor-bar);
+    border: 2px solid #fff;
+    border-radius: 50%;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }

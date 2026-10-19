@@ -1,20 +1,19 @@
-#Essa página faz a coleta dos dados que o usuário digitar
-
 import dash
 from dash import html, dcc, Input, Output, State
 
+
 dash.register_page(__name__, path='/', name='Início')
 
-#Cria um layout externo para criar os cards de entrada de dados
-
 '''
-Os códigos abaixo utilizam elementos de css, os quias o dash possui suporte
+Cria os cards, nos quais o usuário irá inserir os dados
+Usa elementos de HTML e CSS, os quais a biblioteca Dash 
+fornece suporte
 '''
 
 layout = html.Div([
    html.H2("Insira os dados para realizar a consulta de entregadores!", style={'textAlign': 'center', 'marginBottom': '30px'}, className="subtitulo"),
     
-    # CARD 1 - Inserir a quantidade de entregadores.
+    # card 1 - inserir a quantidade de entregadores.
     html.Div([
         html.Label(
             "Número de Entregadores *",
@@ -26,9 +25,9 @@ layout = html.Div([
         ),
         html.Div(
             dcc.Input(
-                id="input-numero", #Permite que seja inserido apenas números
-                type="number",
-                placeholder="Digite a quantidade de entregadores",
+                id="input-numero",
+                type="number",  # permite que seja inserido apenas números
+                placeholder="Digite a qntd de entrega.",
                 className="campo-input",
                 style={'width': '100%', 'boxSizing': 'border-box'}
             ),
@@ -36,7 +35,7 @@ layout = html.Div([
         )
     ], className="campo-card"),
 
-    # CARD 2 - Inserir o nome do bar
+    # card 2 - inserir o nome do bar
     html.Div([
         html.Label(
             "Nome do Bar *", 
@@ -48,7 +47,7 @@ layout = html.Div([
         ),
         html.Div(
             dcc.Input(
-                id='input-nome', 
+                id='input-nomeBar', 
                 type='text', 
                 placeholder="Ex: Mascate", 
                 className="campo-input",
@@ -58,7 +57,7 @@ layout = html.Div([
         )
     ], className="campo-card"),
 
-    # CARD 3 - Inserir o endereço
+    # card 3 - inserir o endereço
     html.Div([
         html.Label(
             "Endereço",
@@ -80,7 +79,7 @@ layout = html.Div([
         )
     ], className="campo-card"),
     
-    # CARD 4 - Inserir o raio de busca
+    # card 4 - inserir o raio de busca
     html.Div([
         html.Label(
             "Raio de busca (metros) *", 
@@ -93,7 +92,7 @@ layout = html.Div([
         html.Div(
             dcc.Input(
                 id='input-raio', 
-                type='number', 
+                type='number', # permite que seja inserido apenas números
                 placeholder="Ex: 2000", 
                 className="campo-input",
                 style={'width': '100%', 'boxSizing': 'border-box'}
@@ -116,54 +115,65 @@ Essa função 'observa' o botão de envio, toda vez que o 'n_clicks' é atualiza
 o dash é 'avisado' e roda a função salvar_e_redirecionar
 '''
 
-
 @dash.callback(
     [
-        # Salva os dados que o usuário digitou em um 'acesso global' de todas as pa´ginas
-        Output('dados-usuario', 'data'),
         
-        # Muda a url da página atual
+        # atualiza o armazenamento compartilhado de dados,
+        # permitindo que outras páginas do aplicativo acessem as informações.
+        Output('dados-usuario', 'data'),
+
+        # altera a URL atual para navegar até outra página.
         Output('_pages_location', 'pathname')
     ],
-    
-    # O botão é o gatilho. Quando o 'n_clicks' mudar, a função roda.
+
+    # esse é o gatilho do callback, toda vez que a propriedade n_clicks é atualizada
+    # o dash executa a função salvar_e_redirecionar automaticamente
     Input('btn-enviar', 'n_clicks'),
-    
+
     [
-        # Essas informações são lidas no exato momento em que o botão é clicado.
+        # os state fornecem à função os valores atuais dos campos quando o Input é acionado. =
         State('input-numero', 'value'),
-        State('input-nome', 'value'),
+        State('input-nomeBar', 'value'),
         State('input-endereco', 'value'),
         State('input-raio', 'value')
     ],
-    
-    prevent_initial_call=True  #Impede que a função seja efetuada quando a página é carregada.
+
+    # impede que o callback seja executado automaticamente na inicialização.
+    prevent_initial_call=True
 )
-def salvar_e_redirecionar(n_clicks, numero, nome, endereco, raio):
+
+
+
+def salvar_e_redirecionar(n_clicks, numero, nomeBar, endereco, raio):
+    
     '''
-    Confere se o botão foi clicado e se nenhum dos componenetes é vazio, 
-    caso seja a página não é atualizada
+    Esta função é chamada automaticamente pelo Dash quando o usuário clica
+    no botão 'btn-enviar'.
+    O Dash passa os valores do Input e dos State como argumentos.
     '''
-    # nome pode ser vazio se o endereco for informado
+    
+    # verifica se o botão foi acionado e se os campos de número de entregadores e raio foram preenchidos,
+    # se não foram, não atualiza os dados nem navega para outra página.
     if (not n_clicks) or (numero is None) or (raio is None):
         return dash.no_update, dash.no_update
 
-    # pelo menos um dos dois (nome ou endereco) precisa estar preenchido
-    nome = (nome or "").strip()
+    # remove espaços extras do início e do final dos textos.
+    nomeBar = (nomeBar or "").strip()
     endereco = (endereco or "").strip()
 
-    if (not nome) and (not endereco):
+    # exige que pelo menos um dos campos, nome ou endereço, esteja preenchido.
+    # se ambos estiverem vazios, não atualiza os dados nem navega para outra página.
+    if (not nomeBar) and (not endereco):
         return dash.no_update, dash.no_update
 
-    # Monta o dicionário juntando os valores que o usuário digitou.
+    # dicionário com os dados informados pelo usuário que será enviado ao primeiro Output do callback.
     caixa_de_dados = {
         "numero_entregadores": numero,
-        "nome_bar": nome,
+        "nomeBar": nomeBar,
         "endereco": endereco,
         "raio": raio
     }
 
-    #Retorna para o Output lá de cima
-    # 1. A caixa de dados - lida por todas as páginas
-    # 2. A página que deve ser carregada
+    # atualiza 'dados-usuario' com o dicionário caixa_de_dados.
+    # atualiza '_pages_location.pathname' para '/mapa'
     return caixa_de_dados, '/mapa'

@@ -171,10 +171,10 @@ def busca_entregadores(bares, trieEntregadores, raio, Gproj):
 def cria_tabela(resultado, velocidade):
     """
     Recebe uma lista de (bar, entregador, distanciaReal) e uma velocidade (m/s).
-    Retorna uma lista de tuplas (nomeBar, chaveEntregador, distanciaReal, tempoSegundos),
+    Retorna uma lista de tuplas (nomeBar, chaveEntregador, distanciaReal, tempoMinutos),
     ordenada por nome do bar e pela distância.
     """
-    linhas = [(bar.nome(), entregador.chave(), distancia, distancia / velocidade) for bar, entregador, distancia in resultado]
+    linhas = [(bar.nome(), entregador.chave(), distancia, distancia / velocidade / 60) for bar, entregador, distancia in resultado]
 
     # ordena por nome do bar, distancia e tempo
     linhas.sort(key=lambda x: (x[0], x[2]))

@@ -1,10 +1,10 @@
-from src.auxiliares import LATMIN, LATMAX, LONGMIN, LONGMAX
-from src.auxiliares import Coordenada
 import random
 import networkx as nx
 import osmnx as ox
-from shapely.geometry import Point
 from osmnx.projection import project_geometry
+from shapely.geometry import Point
+from src.auxiliares import LATMIN, LATMAX, LONGMIN, LONGMAX
+from src.auxiliares import Coordenada
 
 class Entregador:
     def __init__(self, chave: str, coord: Coordenada):
@@ -34,20 +34,20 @@ class Entregador:
 
     def distancia_real(self, coordenada, Gproj):
         """
-        Retorna a distancia (em metros) percorrendo as vias do grafo G.
-        Se nao houver caminho, retorna a distancia em linha reta.
+        Retorna a distância (em metros) percorrendo as vias do grafo G.
+        Se não houver caminho, retorna a distância em linha reta.
         """
         crs = Gproj.graph["crs"]
 
-        # converte graus -> metros
+        # converte graus para metros
         pOrigem, _ = project_geometry(Point(self._coord.long, self._coord.lat), to_crs=crs)
         pDestino, _ = project_geometry(Point(coordenada.long, coordenada.lat), to_crs=crs)
 
-        # econtra os nos mais proximos
+        # encontra os nos mais proximos
         noOrigem = ox.distance.nearest_nodes(Gproj, X=pOrigem.x, Y=pOrigem.y)
         noDestino = ox.distance.nearest_nodes(Gproj, X=pDestino.x, Y=pDestino.y)
 
-        # Mesmo no: distancia zero
+        # mesmo no: distancia zero
         if noOrigem == noDestino:
             return 0.0
 
@@ -72,12 +72,13 @@ class Entregador:
 
         return distancia
 
-# quanto menor sigma, mais perto dos bares estarao os entregadores
 def gera_entregadores(bares, N, sigma=0.006, maxTentativas=50):
     '''
-    Dada uma lista de bares, plota N entregadores ao redor de bares aleatorios
-    seguindo uma distribuicao normal com desvio padrao sigma.
+    Dada uma lista de bares, plota N entregadores ao redor de bares aleatórios
+    seguindo uma distribuição normal com desvio padrão sigma.
     '''
+    # quanto menor sigma, mais perto dos bares estarao os entregadores
+
     # verifica se a lista eh vazia
     if not bares:
         raise ValueError("Lista de bares vazia.")
@@ -86,23 +87,22 @@ def gera_entregadores(bares, N, sigma=0.006, maxTentativas=50):
 
     for i in range(N):
         # seleciona bar aleatorio
-        coordBar = (random.choice(bares)).coordenada()
+        bar = random.choice(bares)
 
         # tenta ate encontrar bar na regiao valida
         for _ in range(maxTentativas):
             dlat  = random.gauss(0, sigma)
             dlong = random.gauss(0, sigma)
 
-            lat = coordBar.lat + dlat
-            long = coordBar.long + dlong
+            lat = bar.latitude() + dlat
+            long = bar.longitude() + dlong
 
             if LATMIN < lat < LATMAX and LONGMIN < long < LONGMAX:
-                entregadores.append(Entregador(i, Coordenada(lat, long)))
+                entregadores.append(Entregador(str(i), Coordenada(lat, long)))
                 break
         else:
-            # se nao conseguiu em maxTentativas,
-            # coloca exatamente na coordenada do bar
-            entregadores.append(Entregador(i, Coordenada(lat, long)))
+            # se nao conseguiu em maxTentativas, coloca exatamente na coordenada do bar
+            entregadores.append(Entregador(str(i), Coordenada(lat, long)))
 
     return entregadores
 
@@ -115,15 +115,7 @@ def encontra_vias_proximas(entregadores, G):
     if not entregadores:
         return []
 
-    '''
-    # OSMnx recebe longitude, latitude, nessa ordem
-    longitudes = [c.long for c in entregadores]
-    latitudes = [c.lat for c in entregadores]
-    
-    # encontra a aresta (u, v, ith) mais proxima para CADA ponto
-    # ith: i-esima aresta de u a v
-    arestas = ox.distance.nearest_edges(G, longitudes, latitudes)
-    '''
+    # OSMns lida com consultas em vetores para otimizacao
     longitudes = [e.longitude() for e in entregadores]
     latitudes = [e.latitude() for e in entregadores]
     listaArestas = ox.distance.nearest_edges(G, longitudes, latitudes)
@@ -140,18 +132,10 @@ def encontra_vias_proximas(entregadores, G):
 
         # se nao ha geometria detalhada, usa as coordenadas dos nos u e v
         if geometria is None:
-            uLat = G.nodes[u]['y']
-            uLong = G.nodes[u]['x']
-            vLat = G.nodes[v]['y']
-            vLong = G.nodes[v]['x']
+            uLat, uLong = G.nodes[u]['y'], G.nodes[u]['x']
+            vLat, vLong = G.nodes[v]['y'], G.nodes[v]['x']
             
             # calcula quais dos dois nos esta mais proximo do ponto
-            '''
-            nesse caso eu nao posso simular a reta que liga esses dois pontos e projetar nela,
-            porque nao sei se no mapa isso dara numa via
-            por isso projeto num dos pontos porque, como é interseção,
-            tenho certeza que ali sera via
-            '''
             pLat, pLong = entregador.latitude(), entregador.longitude()
             du = (uLat - pLat)**2 + (uLong - pLong)**2
             dv = (vLat - pLat)**2 + (vLong - pLong)**2
@@ -162,7 +146,7 @@ def encontra_vias_proximas(entregadores, G):
             else:
                 resultado.append(Entregador(entregador.chave(), Coordenada(vLat, vLong)))
         else:
-            # encontra o ponto da geometria mais perto
+            # encontra o ponto da geometria mais proximo
             pLat, pLong = entregador.latitude(), entregador.longitude()
             coordsGeometria = list(geometria.coords)
             

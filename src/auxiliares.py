@@ -13,10 +13,10 @@ ESTADOINICIAL = False
 class Coordenada:
     def __init__(self, lat: float, long: float):
         # verifica se a coordenada esta dentro do intervalo aceito
-        if not (LATMIN < self.lat < LATMAX):
+        if not (LATMIN < lat < LATMAX):
             raise ValueError(f"Latitude deve estar no intervalo ({LATMIN}, {LATMAX}).")
                 
-        if not (LONGMIN < self.long < LONGMAX):
+        if not (LONGMIN < long < LONGMAX):
             raise ValueError(f"Longitude deve estar no intervalo ({LONGMIN}, {LONGMAX}).")
                 
         self.lat = lat

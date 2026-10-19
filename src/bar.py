@@ -1,5 +1,5 @@
-from src.auxiliares import Coordenada
 import csv
+from src.auxiliares import Coordenada
 
 class BarSemCoordenadaError(ValueError):
     def __init__(self, linha, mensagem):

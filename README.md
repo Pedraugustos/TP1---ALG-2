@@ -4,8 +4,8 @@
 
     Instalação das bibliotecas necessárias via terminal:
 
-pip install dash dash-leaflet osmnx networkx shapely
-pip install scipy
+    pip install dash dash-leaflet osmnx networkx shapely
+    pip install scipy
 
 --> Como executar?
 
@@ -13,7 +13,7 @@ pip install scipy
 
     Execute o comando:
 
-python app.py
+    python app.py
 
     Abra o navegador no endereço padrão http que surgir indicado.
 
@@ -29,7 +29,7 @@ python app.py
 
         Clique no botão "Enviar!".
 
-   2) Resultados:
+       2) Resultados:
 
         - Mapa Interativo: exibe pinos coloridos para os estabelecimentos encontrados, círculos com a cor correspondente para os entregadores dentro do raio e marcadores agrupados para os que estão fora do raio.
 

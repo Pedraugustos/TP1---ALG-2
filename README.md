@@ -38,4 +38,4 @@
 --> Observações: 
 
     No desenvolvimento do trabalho foi utilizado o sistema operacional Windows tanto para construção, como para testes. 
-    Além disso, o tempo de execução do algoritmo depende do tamanho dos parâmetros informados pelo o usuário. Dependendo da magnitude desses parâmetros, o         processamento pode levar mais tempo para ser concluído e apresentar os resultados
+    Além disso, o tempo de execução do algoritmo depende do tamanho dos parâmetros informados pelo o usuário. Dependendo da magnitude desses parâmetros, o processamento pode levar mais tempo para ser concluído e apresentar os resultados

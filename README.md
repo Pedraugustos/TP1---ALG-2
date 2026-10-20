@@ -35,7 +35,7 @@
 
         - Tabela Dinâmica: lista detalhada com o nome do bar, id do entregador, distância real percorrida pelas ruas de Belo Horizonte (em metros) e o tempo de chegada.
 
-Observações: 
+--> Observações: 
 
-No desenvolvimento do trabalho foi utilizado o sistema operacional Windows tanto para construção, como para testes. 
-Além disso, o tempo de execução do algoritmo depende do tamanho dos parâmetros informados pelo o usuário. Dependendo da magnitude desses parâmetros, o processamento pode levar mais tempo para ser concluído e apresentar os resultados
+    No desenvolvimento do trabalho foi utilizado o sistema operacional Windows tanto para construção, como para testes. 
+    Além disso, o tempo de execução do algoritmo depende do tamanho dos parâmetros informados pelo o usuário. Dependendo da magnitude desses parâmetros, o         processamento pode levar mais tempo para ser concluído e apresentar os resultados

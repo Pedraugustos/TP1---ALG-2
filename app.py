@@ -20,21 +20,11 @@ app.layout = html.Div([
     dcc.Location(id='url', refresh=False, pathname='/'),
 
     html.H1(
+
         "Seja Bem-Vindo(a)!",
         className="titulo-principal",
         style={'textAlign': 'center'}
     ),
-    
-    # menu de navegacao - cria um acesso a todas as paginas na pasta pages
-    html.Div([
-        html.Div(
-            dcc.Link(
-                f"{page['name']}",          
-                href=page["relative_path"],  
-                style={'marginRight': '20px', 'textDecoration': 'none', 'fontSize': '18px', 'fontWeight': 'bold'}
-            )
-        ) for page in dash.page_registry.values()
-    ], style={'display': 'flex', 'justifyContent': 'center', 'padding': '10px'}),
     
     
     # o 'dash.page_container' eh o local exato onde o Dash vai renderizar o conteudo do arquivo 'home.py' ou 'mapa.py', dependendo da URL atual

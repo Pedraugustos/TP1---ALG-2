@@ -46,12 +46,14 @@ print("Grafo projetado.")
 
 # essa parte define o que o usuario ve assim que a pagina do mapa eh carregada
 layout = html.Div([
+
     html.H2("Resultado da Consulta", style={'textAlign': 'center', 'marginBottom': '20px'}, className="subtitulo"),
     
     # botao que permite ao usuario voltar para a pagina inicial e fazer uma nova busca
     html.Div([
-        dcc.Link("← Voltar para nova consulta", href="/", className="btn-voltar"),
-    ], style={'textAlign': 'center', 'marginBottom': '15px'}),
+
+        dcc.Link("← Voltar para nova consulta", href="/", className="voltar_btn"),
+    ], style={'textAlign': 'center', 'marginBottom': '17px'}),
     
     # essa eh um espaço vazio, no qual o mapa serah carregado
     html.Div(id='resultado-main', style={'maxWidth': '1000px', 'margin': '0 auto', 'borderRadius': '12px', 'overflow': 'hidden', 'boxShadow': '0 4px 12px rgba(0,0,0,0.1)'}) 
@@ -61,6 +63,7 @@ layout = html.Div([
 # o Dash serah responsavel por chamar executar_main quando a propriedade 'data' do componente 'dados-usuario' for atualizada
 
 @dash.callback(
+        
     # define onde o resultado da funcao serah exibido:
     # no espaço reservado acima
     Output('resultado-main', 'children'),
@@ -137,7 +140,7 @@ def executar_main(dados_recebidos):
                 html.H3("Nenhum bar encontrado", style={'color': '#c0392b'}),
                 html.P("Verifique o nome ou o endereço informado e tente novamente.",
                     style={'color': 'white'}),
-                dcc.Link("← Voltar e tentar de novo", href="/", className="btn-voltar"),
+                dcc.Link("← Voltar e tentar de novo", href="/", className="voltar_btn"),
             ], style={'textAlign': 'center', 'padding': '40px'})
 
         if len(bares) > LIMITEBARES:
@@ -149,7 +152,7 @@ def executar_main(dados_recebidos):
                     "Seja mais específico: informe mais caracteres do nome ou do endereço.",
                     style={'color': 'white'}
                 ),
-                dcc.Link("← Voltar e refinar a busca", href="/", className="btn-voltar"),
+                dcc.Link("← Voltar e refinar a busca", href="/", className="voltar_btn"),
             ], style={'textAlign': 'center', 'padding': '40px'})
         
         # chama a funcao que encontra os entregadores dentro do raio do bar
@@ -198,6 +201,7 @@ def executar_main(dados_recebidos):
             
             # define as opcoes de aparencia e posicionamento do icone personalizado do bar
             opcoes_icone = {
+
                 'html': icone_bar_html,
                 'iconSize': [25, 25],  
                 'iconAnchor': [22, 22] 
@@ -205,7 +209,9 @@ def executar_main(dados_recebidos):
 
             # adiciona a lista de marcadores um pino para representar o bar no mapa
             marcBares.append(
+
                 dl.DivMarker(
+
                     position=[bar.latitude(), bar.longitude()],
                     children=[dl.Tooltip(f"BAR: {bar.nome()}")],
                     iconOptions=opcoes_icone
@@ -214,14 +220,19 @@ def executar_main(dados_recebidos):
             
             # cria um quadrado colorido na legenda para cada bar
             legenda_itens.append(
+
                 html.Div([
+
                     html.Div(style={
+
                         'width': '16px', 'height': '16px', 'backgroundColor': cor, 
                         'borderRadius': '50%', 'display': 'inline-block', 'marginRight': '10px',
                         'border': '2px solid white', 'boxShadow': '0 0 3px rgba(0,0,0,0.3)'
                     }),
+
                     html.Span(bar.nome(), style={'fontSize': '14px', 'fontWeight': 'bold'})
-                ], style={'marginBottom': '8px', 'display': 'flex', 'alignItems': 'center'})
+                ], 
+                style={'marginBottom': '8px', 'display': 'flex', 'alignItems': 'center'})
             )
 
         # entregadores capturados: cor do bar correspondente
@@ -231,7 +242,7 @@ def executar_main(dados_recebidos):
                 marcEntregadores.append(
                     dl.CircleMarker(
                         center=[entregador.latitude(), entregador.longitude()],
-                        radius=6, color=cor, weight=2, fill=True, fillColor=cor, fillOpacity=0.6,
+                        radius=7, color=cor, weight=3, fill=True, fillColor=cor, fillOpacity=0.8,
                         children=[dl.Tooltip(f"Entregador {entregador.chave()} — BAR: {nomeBar}")]
                     )
                 )
@@ -249,14 +260,20 @@ def executar_main(dados_recebidos):
 
         # monta o painel flutuante da Legenda em HTML
         legenda_painel = html.Div([
+
             html.H4("Legenda", style={'margin': '0 0 15px 0', 'color': '#1565C0', 'borderBottom': '2px solid #e5dcc8', 'paddingBottom': '5px'}),
             html.Div(legenda_itens),
-            html.Hr(style={'borderColor': '#e5dcc8'}),
+
+            html.Hr(style={'borderColor': "#bab7af"}),
+
             html.Div([
+
                 html.Div(style={'width': '10px', 'height': '10px', 'backgroundColor': 'gray', 'borderRadius': '50%', 'display': 'inline-block', 'marginRight': '10px'}),
                 html.Span("Outros Entregadores", style={'fontSize': '12px', 'color': '#666'})
             ], style={'display': 'flex', 'alignItems': 'center'})
-        ], style={
+
+        ], 
+            style={
             'position': 'absolute', 'top': '20px', 'right': '20px', 'zIndex': '1000',
             'backgroundColor': 'rgba(255, 250, 240, 0.95)', 'padding': '15px',
             'borderRadius': '10px', 'boxShadow': '0 4px 6px rgba(0,0,0,0.2)', 'border': '1px solid #e5dcc8'
@@ -272,20 +289,27 @@ def executar_main(dados_recebidos):
 
         linhas = []
         for nomeBar, chaveEntr, dist, tempo in tabela:
-            corLinha = corPorBar.get(nomeBar, '#999999')
+            corLinha = corPorBar.get(nomeBar, "#DA9797")
+
             linhas.append(html.Tr([
+
                 html.Td([html.Span(className="bolinha-bar"), nomeBar], className="nome-bar"),
                 html.Td(str(chaveEntr)),
                 html.Td(f"{dist:.1f}", className="num"),
                 html.Td(f"{tempo:.1f}", className="num"),
+
             ], style={'--cor-bar': corLinha}))
 
         tabela_html = html.Div([
+
             html.H4("Entregadores selecionados", className="tabela-titulo"),
+
             html.Div(
+                
                 html.Table([cabecalho, html.Tbody(linhas)], className="tabela-entregadores"),
                 className="tabela-scroll"
             )
+
         ], className="tabela-painel")
 
 

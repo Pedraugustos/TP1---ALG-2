@@ -45,7 +45,7 @@ body {
 
 /* Rótulos e descrições dos campos */
 .campo-label,
-.campo-descricao {
+.descricao_campo {
     font-family: Arial, sans-serif;
     letter-spacing: normal;
 }
@@ -58,7 +58,7 @@ body {
     color: #292929;
 }
 
-.campo-descricao {
+.descricao_campo {
     margin: 0 0 16px;
     font-size: 15px;
     line-height: 1.5;
@@ -66,7 +66,7 @@ body {
 }
 
 /* Campos de entrada */
-.campo-card .campo-input {
+.campo-card .campo_input {
     box-sizing: border-box;
     display: block;
     width: 100%;
@@ -87,29 +87,21 @@ body {
                 box-shadow 0.2s ease-in-out;
 }
 
-.campo-card .campo-input::placeholder {
+.campo-card .campo_input::placeholder {
     color: #adb5bd;
     opacity: 1;
     font-size: 15px;
     letter-spacing: normal;
 }
 
-.campo-card .campo-input:focus {
+.campo-card .campo_input:focus {
     border-color: #8b9dc3;
     box-shadow: 0 0 0 2px rgba(139, 157, 195, 0.15);
 }
 
-/* Remove as setas dos campos numéricos em navegadores WebKit */
-.campo-card .campo-input::-webkit-inner-spin-button,
-.campo-card .campo-input::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-}
-
 /* Botões */
-.btn-enviar,
-.btn-voltar {
+.enviar-btn,
+.voltar_btn {
     font-family: Arial, sans-serif;
     font-weight: bold;
     background-color: #FFC400;
@@ -118,7 +110,7 @@ body {
     transition: background-color 0.2s;
 }
 
-.btn-enviar {
+.enviar-btn {
     display: block;
     box-sizing: border-box;
     width: 100%;
@@ -130,19 +122,19 @@ body {
     border: none;
 }
 
-.btn-voltar {
+.voltar_btn {
     display: inline-block;
     padding: 10px 20px;
     color: #fff !important;
     text-decoration: none !important;
 }
 
-.btn-enviar:hover,
-.btn-voltar:hover {
+.enviar-btn:hover,
+.voltar_btn:hover {
     background-color: #3D5AFE;
 }
 
-.btn-voltar:hover {
+.voltar_btn:hover {
     color: #fff !important;
 }
 
@@ -202,13 +194,6 @@ body {
     font-weight: bold;
 }
 
-/* Cor de cada linha associada ao bar correspondente */
-.tabela-entregadores tbody tr {
-    background-color: color-mix(in srgb, var(--cor-bar) 13%, transparent);
-    border-left: 6px solid var(--cor-bar);
-    border-bottom: 1px solid #e5dcc8;
-    color: #333;
-}
 
 /* Círculo que identifica a cor do bar na tabela */
 .bolinha-bar {

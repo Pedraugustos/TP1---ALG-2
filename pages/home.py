@@ -10,46 +10,54 @@ fornece suporte.
 '''
 
 layout = html.Div([
-   html.H2("Insira os dados para realizar a consulta de entregadores!", style={'textAlign': 'center', 'marginBottom': '30px'}, className="subtitulo"),
+   html.H2
+   ("Insira os dados para realizar a consulta de entregadores!", style={'textAlign': 'center', 'marginBottom': '30px'}, className="subtitulo"),
     
     # card 1 - inserir a quantidade de entregadores
     html.Div([
         html.Label(
+            
             "NÚMERO DE ENTREGADORES",
             className="campo-label"
         ),
         html.P(
+            
             "Esse valor serve de base para gerar os entregadores.",
-            className="campo-descricao"
+            className="descricao_campo"
         ),
         html.Div(
+            
             dcc.Input(
-                id="input-numero",
+                id="numero_input",
                 type="number",  # permite que seja inserido apenas números
                 placeholder="Quant. de entregadores",
-                className="campo-input",
+                className="campo_input",
                 style={'width': '100%', 'boxSizing': 'border-box'}
             ),
             style={'width': '100%'}
         )
+
     ], className="campo-card"),
 
     # card 2 - inserir o nome do bar
     html.Div([
         html.Label(
+
             "NOME DO BAR", 
             className="campo-label"
         ),
         html.P(
+
             "Digite o nome do bar ou o prefixo dele.", 
-            className="campo-descricao"
+            className="descricao_campo"
         ),
         html.Div(
+
             dcc.Input(
-                id='input-nomeBar', 
+                id='nomeBar_input', 
                 type='text', 
                 placeholder="EX: Mascate", 
-                className="campo-input",
+                className="campo_input",
                 style={'width': '100%', 'boxSizing': 'border-box'}
             ),
             style={'width': '100%'}
@@ -58,20 +66,23 @@ layout = html.Div([
 
     # card 3 - inserir o endereco
     html.Div([
+
         html.Label(
             "ENDEREÇO",
             className="campo-label"
         ),
+
         html.P(
             "Digite o endereço do bar ou o prefixo dele.",
-            className="campo-descricao"
+            className="descricao_campo"
         ),
+
         html.Div(
             dcc.Input(
-                id='input-endereco',
+                id='endereco_input',
                 type='text',
                 placeholder="EX: Rua da bahia, 1234",
-                className="campo-input",
+                className="campo_input",
                 style={'width': '100%', 'boxSizing': 'border-box'}
             ),
             style={'width': '100%'}
@@ -80,20 +91,23 @@ layout = html.Div([
     
     # card 4 - inserir o raio de busca
     html.Div([
+
         html.Label(
             "RAIO DE BUSCA (metros)", 
             className="campo-label"
         ),
+
         html.P(
             "Distância máxima em metros para buscar entregadores.", 
-            className="campo-descricao"
+            className="descricao_campo"
         ),
+
         html.Div(
             dcc.Input(
-                id='input-raio', 
+                id='raio_input', 
                 type='number', # permite que seja inserido apenas numeros
                 placeholder="EX: 2000", 
-                className="campo-input",
+                className="campo_input",
                 style={'width': '100%', 'boxSizing': 'border-box'}
             ),
             style={'width': '100%'}
@@ -103,9 +117,9 @@ layout = html.Div([
     # botao para o envio dos dados
     html.Button(
         'Enviar!', 
-        id='btn-enviar', 
+        id='enviar-btn', 
         n_clicks=0, 
-        className="btn-enviar"
+        className="enviar-btn"
     ),
 ])
 
@@ -126,14 +140,14 @@ o dash é 'avisado' e roda a função salvar_e_redirecionar.
 
     # esse eh o gatilho do callback, toda vez que a propriedade n_clicks eh
     # atualizada, o dash executa a funcao salvar_e_redirecionar automaticamente
-    Input('btn-enviar', 'n_clicks'),
+    Input('enviar-btn', 'n_clicks'),
 
     [
         # os states fornecem a funcao os valores atuais dos campos quando o input eh acionado
-        State('input-numero', 'value'),
-        State('input-nomeBar', 'value'),
-        State('input-endereco', 'value'),
-        State('input-raio', 'value')
+        State('numero_input', 'value'),
+        State('nomeBar_input', 'value'),
+        State('endereco_input', 'value'),
+        State('raio_input', 'value')
     ],
 
     # impede que o callback seja executado automaticamente na inicializacao
@@ -143,25 +157,29 @@ o dash é 'avisado' e roda a função salvar_e_redirecionar.
 def salvar_e_redirecionar(n_clicks, numero, nomeBar, endereco, raio):   
     '''
     Esta função é chamada automaticamente pelo Dash quando o usuário clica
-    no botão 'btn-enviar'.
+    no botão 'enviar-btn'.
     O Dash passa os valores do Input e dos State como argumentos.
     '''
     
     # verifica se o botao foi acionado e se os campos de numero de entregadores e raio
     # foram preenchidos, se nao foram, nao atualiza os dados nem navega para outra pagina
+    
     if (not n_clicks) or (numero is None) or (raio is None):
         return dash.no_update, dash.no_update
 
     # remove espacos extras do inicio e do final dos textos
+    
     nomeBar = (nomeBar or "").strip()
     endereco = (endereco or "").strip()
 
     # exige que pelo menos um dos campos, nome ou endereco, esteja preenchido
     # se ambos estiverem vazios, nao atualiza os dados nem navega para outra pagina
+    
     if (not nomeBar) and (not endereco):
         return dash.no_update, dash.no_update
 
     # dicionario com os dados informados pelo usuario que serah enviado ao primeiro output do callback
+    
     caixa_de_dados = {
         "numero_entregadores": numero,
         "nomeBar": nomeBar,
